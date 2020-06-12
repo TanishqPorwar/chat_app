@@ -12,7 +12,7 @@ final Color gradientColorStart = Color(0xff00b6f3);
 final Color gradientColorEnd = Color(0xff0184dc);
 
 final Color senderColor = Color(0xff2b343b);
-final Color recieverColor = Color(0xff1e2225);
+final Color receiverColor = Color(0xff1e2225);
 
 final Gradient fabGradient = LinearGradient(
   colors: [gradientColorStart, gradientColorEnd],

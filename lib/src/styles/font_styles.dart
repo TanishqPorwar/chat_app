@@ -29,3 +29,14 @@ final TextStyle tileSubtitleStyle = TextStyle(
   color: greyColor,
   fontSize: 14,
 );
+
+final TextStyle searchStyle = TextStyle(
+  color: Colors.white,
+  fontWeight: FontWeight.bold,
+  fontSize: 35,
+);
+
+final TextStyle suggestionTitleStyle =
+    TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
+
+final TextStyle suggestionSubtitleStyle = TextStyle(color: greyColor);
