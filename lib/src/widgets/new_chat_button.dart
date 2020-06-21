@@ -11,7 +11,6 @@ class NewChatButton extends StatelessWidget {
       ),
       child: Icon(
         Icons.edit,
-        color: Colors.white,
         size: 25,
       ),
       padding: EdgeInsets.all(15),

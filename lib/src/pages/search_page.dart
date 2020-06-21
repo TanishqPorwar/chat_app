@@ -1,4 +1,5 @@
 import 'package:chat_app/src/models/user.dart';
+import 'package:chat_app/src/pages/chatscreens/chat_screen.dart';
 import 'package:chat_app/src/services/firebase_repository.dart';
 import 'package:chat_app/src/styles/colors.dart';
 import 'package:chat_app/src/styles/font_styles.dart';
@@ -47,7 +48,6 @@ class _SearchScreenState extends State<SearchScreen> {
       leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.white,
           ),
           onPressed: () => Navigator.pop(context)),
       elevation: 0,
@@ -68,7 +68,6 @@ class _SearchScreenState extends State<SearchScreen> {
               suffixIcon: IconButton(
                 icon: Icon(
                   Icons.close,
-                  color: Colors.white,
                 ),
                 onPressed: () {
                   searchController.clear();
@@ -105,9 +104,12 @@ class _SearchScreenState extends State<SearchScreen> {
         return CustomTile(
           mini: false,
           onTap: () {
-            // Navigator.push(context, (Context)=>ChatScreen(
-            //   receiver:searchedUser
-            // ));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatScreen(receiver: searchedUser),
+              ),
+            );
           },
           leading: CircleAvatar(
             backgroundImage: NetworkImage(searchedUser.profilePhoto),

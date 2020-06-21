@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/search_screen': (context) => SearchScreen(),
       },
+      theme: ThemeData.dark(),
       home: FutureBuilder(
         future: _repository.getCurrentUser(),
         builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
