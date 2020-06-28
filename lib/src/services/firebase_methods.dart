@@ -1,3 +1,4 @@
+import 'package:chat_app/src/models/message.dart';
 import 'package:chat_app/src/models/user.dart';
 import 'package:chat_app/src/utils/utilities.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -77,5 +78,30 @@ class FirebaseMethods {
       }
     }
     return userList;
+  }
+
+  Future<void> addMessageToDb(
+      Message message, User sender, User receiver) async {
+    var map = message.toMap();
+    await firestore
+        .collection("messages")
+        .document(message.senderId)
+        .collection(message.receiverId)
+        .add(map);
+
+    await firestore
+        .collection("messages")
+        .document(message.receiverId)
+        .collection(message.senderId)
+        .add(map);
+  }
+
+  Stream<QuerySnapshot> getMessageStream(String senderId, String receiverId) {
+    return Firestore.instance
+        .collection("messages")
+        .document(senderId)
+        .collection(receiverId)
+        .orderBy("timestamp", descending: true)
+        .snapshots();
   }
 }
