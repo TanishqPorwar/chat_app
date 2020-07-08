@@ -1,6 +1,23 @@
-# chat_app
+# chat_app (WIP)
 
-A new Flutter project.
+## Features
+- [x] google sign-in
+- [x] one to one chat
+- [ ] group chat
+- [ ] video call
+- [ ] audio call
+- [ ] call logs
+- [ ] view contacts
+- [x] send camera image
+- [x] send gallery image
+- [ ] share files, contacts,location, polls
+- [ ] end-to-end encryption
+- [x] search users
+- [ ] notification
+
+# Screenshots
+
+<img src="screenshots/1.gif">
 
 ## Getting Started
 
