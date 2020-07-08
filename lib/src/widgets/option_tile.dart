@@ -6,8 +6,9 @@ class OptionTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
+  final Function onTap;
 
-  const OptionTile({Key key, this.title, this.subtitle, this.icon})
+  const OptionTile({Key key, this.title, this.subtitle, this.icon, this.onTap})
       : super(key: key);
 
   @override
@@ -15,6 +16,7 @@ class OptionTile extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: CustomTile(
+        onTap: onTap,
         leading: Container(
           margin: EdgeInsets.only(right: 10),
           padding: EdgeInsets.all(10),

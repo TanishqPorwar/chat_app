@@ -1,14 +1,21 @@
+import 'dart:io';
+
+import 'package:chat_app/src/enum/view_state.dart';
 import 'package:chat_app/src/models/message.dart';
 import 'package:chat_app/src/models/user.dart';
+import 'package:chat_app/src/provider/image_upload_provider.dart';
 import 'package:chat_app/src/services/firebase_repository.dart';
 import 'package:chat_app/src/styles/colors.dart';
+import 'package:chat_app/src/utils/utilities.dart';
 import 'package:chat_app/src/widgets/custom_app_bar.dart';
 import 'package:chat_app/src/widgets/option_tile.dart';
+import 'package:chat_app/src/widgets/cached_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
   final User receiver;
@@ -22,6 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController textfieldController = TextEditingController();
   FirebaseRepository _repository = FirebaseRepository();
   ScrollController _listScrollController = ScrollController();
+  ImageUploadProvider _imageUploadProvider;
   bool isTyping = false;
   bool showEmojiPicker = false;
   User sender;
@@ -60,6 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _imageUploadProvider = Provider.of<ImageUploadProvider>(context);
     return Scaffold(
       backgroundColor: blackColor,
       appBar: customAppBar(context),
@@ -68,6 +77,19 @@ class _ChatScreenState extends State<ChatScreen> {
           Flexible(
             child: messageList(),
           ),
+          (_imageUploadProvider.getViewState == ViewState.LOADING)
+              ? Container(
+                  alignment: Alignment.centerRight,
+                  margin: EdgeInsets.only(right: 15),
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    child: SpinKitRipple(
+                      color: blueColor,
+                    ),
+                  ),
+                )
+              : Container(),
           chatControls(),
           showEmojiPicker
               ? Container(
@@ -200,12 +222,16 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   getMessage(Message message) {
-    return Text(
-      message.message,
-      style: TextStyle(
-        fontSize: 16,
-      ),
-    );
+    return message.type != "image"
+        ? Text(
+            message.message,
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          )
+        : (message.photoUrl != null)
+            ? CachedImage(url: message.photoUrl)
+            : Text("url is null");
   }
 
   addMediaOptions(context) {
@@ -244,6 +270,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   title: "Media",
                   subtitle: "Share Photos and Videos",
                   icon: Icons.image,
+                  onTap: () => pickImage(source: ImageSource.gallery),
                 ),
                 OptionTile(
                   title: "File",
@@ -351,7 +378,12 @@ class _ChatScreenState extends State<ChatScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Icon(Icons.mic),
                 ),
-          isTyping ? Container() : Icon(Icons.camera_alt),
+          isTyping
+              ? Container()
+              : GestureDetector(
+                  onTap: () => pickImage(source: ImageSource.camera),
+                  child: Icon(Icons.camera_alt),
+                ),
           isTyping
               ? Container(
                   margin: EdgeInsets.only(left: 10),
@@ -369,6 +401,16 @@ class _ChatScreenState extends State<ChatScreen> {
               : Container(),
         ],
       ),
+    );
+  }
+
+  pickImage({@required ImageSource source}) async {
+    File selectedImage = await Utils.pickImage(source: source);
+    _repository.uploadImage(
+      image: selectedImage,
+      receiverId: widget.receiver.uid,
+      senderId: _currentUserId,
+      imageUploadProvider: _imageUploadProvider,
     );
   }
 
